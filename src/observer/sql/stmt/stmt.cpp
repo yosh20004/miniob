@@ -14,6 +14,7 @@ See the Mulan PSL v2 for more details. */
 
 #include "sql/stmt/stmt.h"
 #include "common/log/log.h"
+#include "sql/parser/parse_defs.h"
 #include "sql/stmt/calc_stmt.h"
 #include "sql/stmt/create_index_stmt.h"
 #include "sql/stmt/create_table_stmt.h"
@@ -29,6 +30,7 @@ See the Mulan PSL v2 for more details. */
 #include "sql/stmt/show_tables_stmt.h"
 #include "sql/stmt/trx_begin_stmt.h"
 #include "sql/stmt/trx_end_stmt.h"
+#include "sql/stmt/update_stmt.h"
 
 bool stmt_type_ddl(StmtType type)
 {
@@ -106,6 +108,12 @@ RC Stmt::create_stmt(Db *db, ParsedSqlNode &sql_node, Stmt *&stmt)
 
     case SCF_CALC: {
       return CalcStmt::create(sql_node.calc, stmt);
+    }
+
+    case SCF_UPDATE: {
+      return UpdateStmt::create(db, sql_node.update, stmt);
+      // 为了实现Update功能 绝不能在这里返回RC::未实现 因此我们需要添加这个分支
+      // 随后还要实现里面的函数
     }
 
     default: {

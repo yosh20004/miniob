@@ -57,19 +57,19 @@ RC SqlTaskHandler::handle_event(Communicator *communicator)
 
 RC SqlTaskHandler::handle_sql(SQLStageEvent *sql_event)
 {
-  RC rc = query_cache_stage_.handle_request(sql_event);
+  RC rc = query_cache_stage_.handle_request(sql_event); //查看缓存，是否最近执行过
   if (OB_FAIL(rc)) {
     LOG_TRACE("failed to do query cache. rc=%s", strrc(rc));
     return rc;
   }
 
-  rc = parse_stage_.handle_request(sql_event);
+  rc = parse_stage_.handle_request(sql_event); //解析sql语句，如果输入的sql语句非法，则此处rc!=RC::SUCCESS 退出
   if (OB_FAIL(rc)) {
     LOG_TRACE("failed to do parse. rc=%s", strrc(rc));
     return rc;
   }
 
-  rc = resolve_stage_.handle_request(sql_event);
+  rc = resolve_stage_.handle_request(sql_event); //我们要实现的update语句 到此会被置为RC::UNIMPLEMENTED,因此这里面肯定多少有问题，需处理
   if (OB_FAIL(rc)) {
     LOG_TRACE("failed to do resolve. rc=%s", strrc(rc));
     return rc;
