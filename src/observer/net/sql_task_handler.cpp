@@ -75,7 +75,7 @@ RC SqlTaskHandler::handle_sql(SQLStageEvent *sql_event)
     return rc;
   }
 
-  rc = optimize_stage_.handle_request(sql_event);
+  rc = optimize_stage_.handle_request(sql_event); //我们要实现的update语句 到此会被置为RC::UNIMPLEMENTED,因此这里面肯定多少有问题，需处理 
   if (rc != RC::UNIMPLEMENTED && rc != RC::SUCCESS) {
     LOG_TRACE("failed to do optimize. rc=%s", strrc(rc));
     return rc;
