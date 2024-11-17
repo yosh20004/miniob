@@ -8,14 +8,11 @@ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details. */
 
-//
-// Created by Wangyunlai on 2022/5/22.
-//
-
 #pragma once
 
 #include "common/rc.h"
 #include "sql/stmt/stmt.h"
+#include "sql/stmt/filter_stmt.h"
 
 class Table;
 
@@ -27,18 +24,23 @@ class UpdateStmt : public Stmt
 {
 public:
   UpdateStmt() = default;
-  UpdateStmt(Table *table, Value *values, int value_amount);
+  UpdateStmt(Table *table, const char *attribute_name, const Value &value, FilterStmt *filter_stmt);
+  ~UpdateStmt() override;
+
+  StmtType type() const override { return StmtType::UPDATE; } // 实现父类Stmt的纯虚函数
 
 public:
   static RC create(Db *db, const UpdateSqlNode &update_sql, Stmt *&stmt);
 
 public:
   Table *table() const { return table_; }
-  Value *values() const { return values_; }
-  int    value_amount() const { return value_amount_; }
+  const char *attribute_name() const { return attribute_name_; }
+  const Value &value() const { return value_; }
+  FilterStmt *filter_stmt() const { return filter_stmt_; }
 
 private:
-  Table *table_        = nullptr;
-  Value *values_       = nullptr;
-  int    value_amount_ = 0;
+  Table *table_ = nullptr;                // 指向要更新的表对象的指针
+  const char *attribute_name_ = nullptr;  // 要更新的字段名
+  Value value_;                           // 要更新成的新值
+  FilterStmt *filter_stmt_ = nullptr;     // WHERE条件的过滤语句
 };
