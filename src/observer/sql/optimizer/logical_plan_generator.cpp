@@ -26,6 +26,7 @@ See the Mulan PSL v2 for more details. */
 #include "sql/operator/project_logical_operator.h"
 #include "sql/operator/table_get_logical_operator.h"
 #include "sql/operator/group_by_logical_operator.h"
+#include "sql/operator/update_logical_operator.h"
 
 #include "sql/stmt/calc_stmt.h"
 #include "sql/stmt/delete_stmt.h"
@@ -307,9 +308,12 @@ RC LogicalPlanGenerator::create_plan(UpdateStmt *update_stmt, unique_ptr<Logical
   }
 
   // 创建更新操作
-  unique_ptr<LogicalOperator> update_oper(new UpdateLogicalOperator(table, 
-                                         update_stmt->field_meta(),
-                                         update_stmt->values()));
+  unique_ptr<LogicalOperator> update_oper(
+    new UpdateLogicalOperator(table,                                            //表名
+                              update_stmt->attribute_name(),       //字段名
+                              update_stmt->value()));                       //update值
+
+  // std::cout << table->name() << "\n" << update_stmt->attribute_name() << "\n"; //ok
 
   // 组装操作链
   if (predicate_oper) {
