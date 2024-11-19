@@ -116,6 +116,11 @@ RC Stmt::create_stmt(Db *db, ParsedSqlNode &sql_node, Stmt *&stmt)
       // 随后还要实现里面的函数
     }
 
+    case SCF_DROP_TABLE: {
+      return DropTableStmt::create(db, sql_node.drop_table, stmt);
+      // 和Update同理，要实现drop table，要在这里加入drop table的分支
+    }
+
     default: {
       LOG_INFO("Command::type %d doesn't need to create statement.", sql_node.flag);
     } break;
