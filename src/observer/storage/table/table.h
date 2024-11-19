@@ -54,6 +54,9 @@ public:
   RC create(Db *db, int32_t table_id, const char *path, const char *name, const char *base_dir,
       span<const AttrInfoSqlNode> attributes, StorageFormat storage_format);
 
+  RC drop(Db *db, const char *table_name, const char *base_dir);
+  //和create一张表一样 drop用来摧毁一张表
+
   /**
    * 打开一个表
    * @param meta_file 保存表元数据的文件完整路径

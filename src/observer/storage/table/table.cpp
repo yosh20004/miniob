@@ -127,6 +127,24 @@ RC Table::create(Db *db, int32_t table_id, const char *path, const char *name, c
   return rc;
 }
 
+RC Table::drop(Db *db, const char *table_name, const char *base_dir)
+{
+  std::string data_file_path = table_data_file(base_dir, table_name);
+  std::string meta_file_path = table_meta_file(base_dir, table_name);
+  // TODO: delete index
+  data_buffer_pool_->close_file();
+  data_buffer_pool_ = nullptr;  // 防止析构函数中再次尝试关闭文件
+  if (unlink(meta_file_path.c_str()) == -1) {
+    LOG_ERROR("Failed to remove table metadata file for %s due to %s", meta_file_path.c_str(), strerror(errno));
+    return RC::INTERNAL;
+  }
+  if (unlink(data_file_path.c_str()) == -1) { //直接进行物理操作，使用系统函数消灭元数据
+    LOG_ERROR("Failed to remove table data file for %s due to %s", meta_file_path.c_str(), strerror(errno));
+    return RC::INTERNAL;
+  }
+  return RC::SUCCESS;
+}
+
 RC Table::open(Db *db, const char *meta_file, const char *base_dir)
 {
   // 加载元数据文件
