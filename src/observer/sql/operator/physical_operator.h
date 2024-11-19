@@ -55,6 +55,8 @@ enum class PhysicalOperatorType
   GROUP_BY_VEC,
   AGGREGATE_VEC,
   EXPR_VEC,
+  
+  UPDATE, //新增Update操作的物理算子类型
 };
 
 /**

@@ -46,6 +46,11 @@ See the Mulan PSL v2 for more details. */
 #include "sql/operator/update_logical_operator.h"
 #include "sql/optimizer/physical_plan_generator.h"
 
+
+#include "sql/operator/update_physical_operator.h" //为了实现update操作的物理实现而引用此头文件
+                                                   //此头文件为我们自己编写添加
+
+
 using namespace std;
 
 RC PhysicalPlanGenerator::create(LogicalOperator &logical_operator, unique_ptr<PhysicalOperator> &oper)
@@ -393,14 +398,17 @@ RC PhysicalPlanGenerator::create_plan(UpdateLogicalOperator &update_oper, unique
     }
   }
 
-  oper = unique_ptr<PhysicalOperator>(
-    new UpdatePhysicalOperator(update_oper.table(), 
-                              update_oper.attribute_name(),
-                              update_oper.value()));
+  // oper = unique_ptr<PhysicalOperator>(
+  //   new UpdatePhysicalOperator(update_oper.table(), 
+  //                             update_oper.attribute_name(),
+  //                             update_oper.value()));
 
-  if (child_physical_oper) {
-    oper->add_child(std::move(child_physical_oper));
-  }
+  // if (child_physical_oper) {
+  //   oper->add_child(std::move(child_physical_oper));
+  // }
+
+  // 这段不要删 不知道为什么UpdatePhysicalOperator构造不了
+
   return rc;
 }
 
