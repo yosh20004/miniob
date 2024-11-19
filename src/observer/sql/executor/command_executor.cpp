@@ -82,6 +82,11 @@ RC CommandExecutor::execute(SQLStageEvent *sql_event)
       rc = RC::SUCCESS;
     } break;
 
+    case StmtType::DROP_TABLE: {
+      DropTableExecutor executor; //加入dropTable的执行器，后续需要实现该执行器的类
+      executor.execute(sql_event);
+    } break;
+
     default: {
       LOG_ERROR("unknown command: %d", static_cast<int>(stmt->type()));
       rc = RC::UNIMPLEMENTED;
